@@ -1,0 +1,868 @@
+/* ============================================================
+   FONTY — hostowane lokalnie (assets/fonts/)
+   Pobrane z Google Fonts skryptem tools/fetch-fonts.sh.
+   Powody self-hostingu:
+     • zero połączeń do fonts.gstatic.com — brak przekazywania IP
+       odwiedzającego stronie trzeciej (RODO),
+     • brak dodatkowego DNS + TLS do obcego origin,
+     • pliki idą z tego samego serwera co reszta strony.
+
+   Zostawiamy tylko podzbiory `latin` i `latin-ext`. latin-ext jest
+   OBOWIĄZKOWY: Ś, Ż, Ł, ą, ę, ć, ń, ś, ź, ż leżą w U+0100–02BA.
+   Bez niego polskie znaki spadłyby na font zastępczy i „ŚWIDNIK"
+   renderowałby się innym krojem niż reszta napisu.
+
+   Open Sans jest fontem ZMIENNYM — Google oddaje ten sam plik dla
+   wag 400/600/700 (potwierdzone sumą MD5), więc zamiast sześciu
+   plików trzymamy dwa i deklarujemy zakres wag 300–800.
+   ============================================================ */
+
+@font-face{
+  font-family:'Titan One';
+  font-style:normal; font-weight:400; font-display:swap;
+  src:url(assets/fonts/titanone-latinext.woff2) format('woff2');
+  unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face{
+  font-family:'Titan One';
+  font-style:normal; font-weight:400; font-display:swap;
+  src:url(assets/fonts/titanone-latin.woff2) format('woff2');
+  unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face{
+  font-family:'Open Sans';
+  font-style:normal; font-weight:300 800; font-stretch:100%; font-display:swap;
+  src:url(assets/fonts/opensans-latinext.woff2) format('woff2');
+  unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face{
+  font-family:'Open Sans';
+  font-style:normal; font-weight:300 800; font-stretch:100%; font-display:swap;
+  src:url(assets/fonts/opensans-latin.woff2) format('woff2');
+  unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* ============================================================
+   AMERICANO Świdnik
+   System: "Lamanna" (refero.design) zmapowany na paletę marki
+   — twarde pasy koloru, zero zaokrągleń, zero box-shadow,
+     offsetowe cienie tekstu bez blura, full-bleed.
+   ============================================================ */
+
+:root{
+  /* paleta */
+  /* Żółć pobrana pipetą wprost z ulotki (assets/_src/ulotka1z.jpg).
+     NIE zmieniaj na #FFC700 — wtedy wycinki il-*.png przestają się
+     zlewać z tłem i widać wokół nich prostokąt. Same wycinki leżą
+     w assets/_src/nieuzywane/ (zdjęte z kart, ale gotowe do powrotu). */
+  --yellow:  #FAC112;
+  --orange:  #FF4100;   /* pas energii + offsetowy cień */
+  --ink:     #111111;   /* tekst i struktura */
+  --cream:   #FEE3C1;   /* najlżejsza powierzchnia */
+  --peach:   #FDBEBA;
+  --lemon:   #F6E653;
+  --white:   #FFFFFF;
+  /* Paleta ilustracji (--crust/--tomato/--basil) i --charcoal odpadły
+     razem z rysunkami usuniętymi z kart. */
+
+  --display: "Titan One", Impact, "Arial Black", sans-serif;
+
+  /* skala odstępów wg systemu */
+  --s1:6px; --s2:10px; --s3:15px; --s4:20px; --s5:30px;
+  --s6:40px; --s7:60px; --s8:100px; --s9:130px;
+
+  --shadow-off: 5px;    /* offset solidnego cienia typografii */
+
+  /* wysokość przyklejonego bloku (nagłówek + pasek kategorii).
+     Nadpisywana z JS pomiarem; wartość tutaj to tylko awaryjna. */
+  --stick: 132px;
+}
+
+*,*::before,*::after{ box-sizing:border-box }
+
+html{ scroll-behavior:smooth }
+@media (prefers-reduced-motion:reduce){ html{ scroll-behavior:auto } }
+
+body{
+  margin:0;
+  background:var(--yellow);
+  color:var(--ink);
+  font-family:"Open Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:18px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  /* `clip`, nie `hidden`: `hidden` robi z body kontener przewijania
+     i potrafi rozbić position:sticky w nagłówku. */
+  overflow-x:clip;
+}
+
+img{ max-width:100%; display:block }
+
+a{ color:inherit }
+
+/* Widoczny focus w kolorze marki. Domyślny ring przeglądarki ginął
+   na czarnych przyciskach i na ciemnych sekcjach. */
+:focus-visible{ outline:3px solid var(--ink); outline-offset:3px }
+.topbar :focus-visible,
+.marquee :focus-visible,
+.sec--ink :focus-visible,
+.foot :focus-visible{ outline-color:var(--yellow) }
+
+/* Treść tylko dla czytników ekranu. `position:absolute` jest tu
+   istotny — dzięki niemu te opisy wypadają z układu siatki
+   pieczątki i nie rozpychają jej. */
+.sr-only{
+  position:absolute; width:1px; height:1px;
+  padding:0; margin:-1px; overflow:hidden;
+  clip-path:inset(50%); white-space:nowrap; border:0;
+}
+
+.skip{
+  position:absolute; left:-9999px; top:0; z-index:999;
+  background:var(--ink); color:var(--yellow); padding:var(--s3) var(--s4);
+  font-weight:700;
+}
+.skip:focus{ left:0 }
+
+/* ---------- typografia ---------- */
+.display{
+  font-family:var(--display);
+  font-weight:400;
+  text-transform:uppercase;
+  letter-spacing:0;
+  /* UWAGA: system mówi 0.89, ale Titan One ma wysokie akcenty
+     i polskie Ś/Ó/Ż/Ł nachodzą na linię wyżej. 1.02 to minimum,
+     przy którym diakrytyki się nie zderzają. Nie zjeżdżaj niżej. */
+  line-height:1.02;
+}
+
+.eyebrow{
+  font-weight:700; font-size:14px; letter-spacing:.18em;
+  text-transform:uppercase; margin:0 0 var(--s4);
+}
+
+/* ============================================================
+   TOPBAR
+   ============================================================ */
+.topbar{
+  background:var(--ink); color:var(--yellow);
+  font-size:13px; letter-spacing:.06em; text-transform:uppercase;
+  font-weight:600;
+}
+.topbar__in{
+  display:flex; align-items:center; justify-content:center;
+  gap:var(--s3); flex-wrap:wrap;
+  padding:var(--s2) var(--s4);
+  text-align:center;
+}
+.topbar__item{ color:inherit; font-size:inherit }
+.topbar__item + .topbar__item::before{
+  content:"•"; opacity:.45; margin-right:var(--s3);
+}
+.topbar__tel{
+  text-decoration:underline; text-underline-offset:3px;
+  white-space:nowrap;
+}
+.dot{
+  width:9px; height:9px; display:inline-block; margin-right:7px;
+  background:#7a7a7a; vertical-align:middle;
+}
+.dot.is-open{ background:#35D07F; animation:pulse 2s infinite }
+.dot.is-closed{ background:var(--orange) }
+@keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.35} }
+
+/* Cel dotykowy min. 24 px (WCAG 2.5.8) także na desktopie —
+   sam tekst dawał 20 px wysokości. */
+.topbar__tel{ padding:4px 2px }
+
+/* Na telefonie i tablecie topbar zjada pierwszy ekran, więc schodzi do
+   jednej linii: status po lewej, klikalny numer po prawej. Adres jest
+   i tak w sekcji KONTAKT, w stopce i w structured data. */
+@media (max-width:980px){
+  .topbar__in{
+    flex-wrap:nowrap; justify-content:space-between;
+    gap:var(--s2); padding:0 var(--s3); text-align:left;
+  }
+  .topbar__addr{ display:none }
+  .topbar__item + .topbar__item::before{ content:none }
+  /* 44 px celu dotykowego — wcześniej link miał 20 px wysokości */
+  .topbar__tel{ padding:13px 4px }
+  .topbar__status{ padding:13px 0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+}
+@media (max-width:400px){
+  .topbar{ font-size:11.5px }
+  .topbar__telLabel{ display:none }
+}
+
+/* ============================================================
+   BLOK PRZYKLEJONY: NAV + KATEGORIE
+   Sticky siedzi na wrapperze, nie na samym nagłówku — dzięki temu
+   pasek kategorii nie musi znać wysokości nav-u.
+   ============================================================ */
+.stick{ position:sticky; top:0; z-index:100 }
+
+.nav{
+  display:flex; align-items:center; gap:var(--s5);
+  padding:var(--s3) var(--s6);
+  background:var(--yellow);
+  border-bottom:3px solid var(--ink);
+  transition:padding .25s ease;
+}
+.nav.is-stuck{ padding-top:var(--s2); padding-bottom:var(--s2) }
+
+.nav__brand{ display:block; flex:0 0 auto }
+.nav__logo{
+  height:104px; width:auto;
+  /* logo jest białe na czarnym tle — invert + multiply kładzie
+     czarny znak wprost na żółtym, bez czarnego prostokąta */
+  filter:invert(1);
+  mix-blend-mode:multiply;
+  transition:height .25s ease;
+}
+.nav.is-stuck .nav__logo{ height:74px }
+
+.nav__links{
+  display:flex; gap:var(--s5); margin-left:auto;
+  font-weight:700; text-transform:uppercase;
+  font-size:15px; letter-spacing:.08em;
+}
+.nav__links a{ text-decoration:none; position:relative; padding:4px 0 }
+.nav__links a::after{
+  content:""; position:absolute; left:0; bottom:0; height:3px; width:0;
+  background:var(--orange); transition:width .25s ease;
+}
+.nav__links a:hover::after,.nav__links a:focus-visible::after{ width:100% }
+
+.nav__burger{
+  display:none; margin-left:auto;
+  background:none; border:3px solid var(--ink); cursor:pointer;
+  width:48px; height:44px; padding:10px 9px;
+  flex-direction:column; justify-content:space-between;
+}
+.nav__burger span{ display:block; height:3px; background:var(--ink); transition:.25s }
+.nav__burger[aria-expanded="true"] span:nth-child(1){ transform:translateY(8px) rotate(45deg) }
+.nav__burger[aria-expanded="true"] span:nth-child(2){ opacity:0 }
+.nav__burger[aria-expanded="true"] span:nth-child(3){ transform:translateY(-8px) rotate(-45deg) }
+
+/* ============================================================
+   PASEK KATEGORII MENU
+   Główny skrót do treści: bez niego dojście z hero do zapiekanek
+   to ponad 5000 px scrolla. Pojawia się dopiero po zejściu
+   z pierwszego ekranu, żeby nie odbierać miejsca CTA.
+   ============================================================ */
+.catnav{
+  max-height:0; overflow:hidden;
+  /* `visibility` jest tu istotna, nie kosmetyczna: sam `max-height:0`
+     zostawiał zwinięte linki w kolejności tabulacji, więc użytkownik
+     klawiatury trafiał na sześć niewidocznych pozycji. */
+  visibility:hidden;
+  transition:max-height .3s ease, visibility .3s;
+}
+.catnav.is-on{ max-height:90px; visibility:visible }
+@media (prefers-reduced-motion:reduce){ .catnav{ transition:none } }
+
+.catnav__list{
+  list-style:none; margin:0; padding:0 var(--s6);
+  display:flex; gap:0;
+  background:var(--ink);
+  border-bottom:3px solid var(--ink);
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+.catnav__list::-webkit-scrollbar{ display:none }
+
+.catnav__list a{
+  display:block; white-space:nowrap; text-decoration:none;
+  padding:13px var(--s4);
+  color:var(--yellow);
+  font-weight:700; font-size:14px;
+  text-transform:uppercase; letter-spacing:.08em;
+  border-bottom:4px solid transparent;
+  transition:color .18s ease, border-color .18s ease, background .18s ease;
+}
+.catnav__list a:hover{ background:rgba(250,193,18,.14) }
+.catnav__list a.is-active{
+  color:var(--white);
+  border-bottom-color:var(--orange);
+}
+.catnav :focus-visible{ outline-color:var(--yellow); outline-offset:-4px }
+
+@media (max-width:980px){
+  .catnav__list{ padding:0 var(--s3) }
+  .catnav__list a{ padding:12px var(--s3); font-size:13px }
+}
+
+/* ---------- przyciski ---------- */
+.btn{
+  display:inline-block; text-decoration:none;
+  font-weight:700; text-transform:uppercase; letter-spacing:.08em;
+  font-size:15px; padding:14px var(--s5);
+  border:3px solid var(--ink);
+  transition:transform .18s ease, background .18s ease, color .18s ease;
+}
+/* Hover przechodzi na czerń na pomarańczu (5.4:1). Biel dawała 3.5:1,
+   czyli poniżej progu dla tekstu tej wielkości. */
+.btn--solid{ background:var(--ink); color:var(--yellow) }
+.btn--solid:hover{ background:var(--orange); color:var(--ink); transform:translate(-3px,-3px) }
+.btn--out{ background:transparent; color:var(--ink) }
+.btn--out:hover{ background:var(--ink); color:var(--yellow); transform:translate(-3px,-3px) }
+.btn--call{ background:var(--orange); color:var(--ink); white-space:nowrap }
+.btn--call:hover{ background:var(--ink); color:var(--yellow); transform:translate(-3px,-3px) }
+.btn--big{ font-size:19px; padding:20px var(--s6); margin-top:var(--s7) }
+
+/* na ciemnym tle czarny przycisk znikał — odwracamy go */
+.sec--ink .btn--solid{
+  background:var(--yellow); color:var(--ink); border-color:var(--yellow);
+}
+.sec--ink .btn--solid:hover{
+  background:var(--orange); color:var(--ink); border-color:var(--orange);
+}
+
+@media (max-width:980px){
+  .nav{ padding:var(--s2) var(--s4); flex-wrap:wrap; gap:var(--s3) }
+  .nav.is-stuck{ padding-top:var(--s1); padding-bottom:var(--s1) }
+  .nav__logo{ height:56px }
+  .nav.is-stuck .nav__logo{ height:48px }
+  .nav__burger{ display:flex }
+  .nav .btn--call{ display:none }
+  .nav__links{
+    order:3; width:100%; margin-left:0;
+    flex-direction:column; gap:0;
+    max-height:0; overflow:hidden; transition:max-height .3s ease;
+  }
+  .nav__links.is-open{ max-height:340px; padding-top:var(--s2) }
+  .nav__links a{ padding:var(--s3) 0; border-top:2px solid rgba(17,17,17,.15) }
+}
+@media (max-width:640px){
+  .nav__logo{ height:48px }
+  .nav.is-stuck .nav__logo{ height:42px }
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{
+  background:var(--yellow);
+  padding:0;                 /* zdjęcie ma dochodzić do krawędzi ekranu */
+  overflow:hidden;
+}
+.hero__grid{
+  display:grid;
+  grid-template-columns:1.04fr .96fr;
+  align-items:stretch;
+}
+.hero__copy{
+  padding:var(--s6) var(--s6) var(--s7);
+  align-self:center;
+}
+
+/* ---------- czarny pas ze zdjęciem ---------- */
+.hero__shot{
+  margin:0;
+  /* dokładnie ten sam czarny co tło fotografii — inaczej przy
+     object-fit:contain widać, gdzie kończy się zdjęcie */
+  background:#010101;
+  border-left:5px solid var(--ink);
+  min-height:600px;
+  overflow:hidden;
+}
+.hero__shot img{
+  width:100%; height:100%;
+  /* `contain`, nie `cover`: kadr ma zostać cały (kawałek + ciągnący
+     się ser + świecąca pizza). Czarne marginesy są niewidoczne, bo
+     panel ma dokładnie ten sam czarny co tło zdjęcia. */
+  object-fit:contain; object-position:center;
+  display:block;
+  transition:transform 1.2s ease;
+}
+.hero:hover .hero__shot img{ transform:scale(1.05) }
+.hero__h1{
+  /* wyżej niż ~118px i hero przestaje się mieścić na ekranie 860 px,
+     a przyciski wypadają pod krawędź */
+  font-size:clamp(44px,8.6vw,118px);
+  margin:0 0 var(--s4);
+  color:var(--ink);
+  text-shadow:var(--shadow-off) var(--shadow-off) 0 var(--orange);
+}
+.hero__h1 .line{ display:block }
+.hero__lead{
+  font-size:clamp(17px,1.7vw,23px); max-width:46ch; margin:0 0 var(--s5);
+  line-height:1.45;
+}
+
+/* trzy fakty pod przyciskami — zastępują dawną plakietkę „60 cm” */
+.hero__facts{
+  list-style:none; margin:var(--s5) 0 0; padding:var(--s4) 0 0;
+  border-top:4px solid var(--ink);
+  display:flex; flex-wrap:wrap; gap:var(--s6);
+}
+.hero__facts b{
+  display:block; font-family:var(--display); font-size:clamp(28px,3.6vw,50px);
+  line-height:1; text-transform:uppercase;
+}
+.hero__facts span{
+  display:block; margin-top:6px; font-weight:700; font-size:14px;
+  text-transform:uppercase; letter-spacing:.08em;
+}
+.hero__cta{ display:flex; gap:var(--s3); flex-wrap:wrap }
+
+/* Na telefonie hero musi zmieścić nagłówek i oba CTA nad zgięciem.
+   Kadr schodzi z kwadratu do 4:3, a odstępy się zaciskają. */
+@media (max-width:980px){
+  .hero__grid{ grid-template-columns:1fr }
+  .hero__copy{ padding:var(--s5) var(--s4) var(--s6); order:2 }
+  .hero__shot{
+    order:1; min-height:0; aspect-ratio:4/3;
+    /* Bez tego limitu na tablecie 768x1024 kadr rósł do 576 px
+       i wypychał nagłówek H1 poniżej zgięcia. Zostaje `contain`,
+       więc ograniczenie wysokości tylko zmniejsza zdjęcie —
+       nic z kadru nie ucina. */
+    max-height:52vh;
+    border-left:0; border-bottom:5px solid var(--ink);
+  }
+  .eyebrow{ margin-bottom:var(--s3) }
+  .hero__lead{ margin-bottom:var(--s4) }
+  .hero__facts{ gap:var(--s5); margin-top:var(--s5) }
+}
+/* Na najwęższych ekranach kadr schodzi do 3:2, odstępy w kopii się
+   zaciskają, a oba CTA stoją obok siebie w jednym rzędzie. Cel: żeby
+   przyciski były nad zgięciem na 375x812 i nie chowały się za
+   przyklejonym paskiem telefonu (66 px). */
+@media (max-width:640px){
+  .hero__shot{ aspect-ratio:3/2 }
+  .hero__copy{ padding-top:var(--s3) }
+  .eyebrow{ margin-bottom:var(--s2) }
+  .hero__h1{ margin-bottom:var(--s2) }
+  .hero__lead{ margin-bottom:var(--s3); font-size:16px }
+  .hero__cta{ gap:var(--s2); flex-wrap:nowrap }
+  .hero__cta .btn{
+    flex:1 1 0; min-width:0; text-align:center;
+    padding:14px var(--s2); font-size:14px;
+  }
+  /* numer znika tylko z przycisku — jest widoczny w topbarze i na
+     przyklejonym pasku, więc nic nie ginie */
+  .btn__num{ display:none }
+}
+/* iPhone SE / 12 mini: bez tych 10 px dolny przycisk hero wchodził
+   pod pasek telefonu na ekranie 812 px wysokości. */
+@media (max-width:400px){
+  .hero__shot{ aspect-ratio:8/5 }
+  .hero__copy{ padding-top:var(--s2) }
+  .hero__h1{ margin-bottom:var(--s1) }
+  .hero__lead{ margin-bottom:var(--s2) }
+}
+
+/* ============================================================
+   MARQUEE
+   ============================================================ */
+.marquee{
+  background:var(--ink); color:var(--yellow);
+  overflow:hidden; white-space:nowrap;
+  border-top:4px solid var(--ink); border-bottom:4px solid var(--ink);
+  padding:var(--s3) 0;
+}
+.marquee__track{ display:inline-flex; animation:slide 34s linear infinite }
+.marquee__track span{
+  font-family:var(--display); font-size:30px;
+  text-transform:uppercase; letter-spacing:.04em;
+  padding-right:var(--s6);
+}
+@keyframes slide{ to{ transform:translateX(-50%) } }
+
+/* ============================================================
+   STATS
+   ============================================================ */
+.stats{ background:var(--orange); color:var(--white); padding:var(--s7) var(--s6) }
+.stats__grid{
+  display:grid; grid-template-columns:repeat(4,1fr); gap:var(--s5);
+  max-width:1200px; margin:0 auto; text-align:center;
+}
+.stat b{
+  display:block;
+  font-family:var(--display); font-size:clamp(44px,6vw,76px);
+  line-height:1;
+  text-shadow:4px 4px 0 var(--ink);
+}
+.stat b i{ font-style:normal; font-size:.6em }
+/* biały na pomarańczu daje tylko 3.5:1 — opis idzie czernią (5.4:1).
+   Same liczby zostają białe: przy 44px+ wystarczy 3:1. */
+.stat span{ display:block; margin-top:var(--s2); font-weight:700; font-size:15px;
+  color:var(--ink);
+  text-transform:uppercase; letter-spacing:.06em; line-height:1.3 }
+
+@media (max-width:780px){
+  .stats{ padding:var(--s6) var(--s4) }
+  .stats__grid{ grid-template-columns:repeat(2,1fr); gap:var(--s5) var(--s4) }
+}
+
+/* ============================================================
+   SEKCJE
+   ============================================================ */
+/* przyklejony blok zasłaniałby nagłówek po kliknięciu w kotwicę */
+.sec,.hero,.gallery,.stats,.card{ scroll-margin-top:calc(var(--stick) + 12px) }
+
+.sec{ padding:var(--s8) var(--s6) }
+.sec--yellow{ background:var(--yellow) }
+/* czerń na pomarańczu, nie biel — biel dawała 3.5:1 */
+.sec--orange{ background:var(--orange); color:var(--ink) }
+.sec--cream{ background:var(--cream) }
+.sec--ink{ background:var(--ink); color:var(--cream) }
+
+.sec__title{
+  font-size:clamp(44px,8vw,110px);
+  margin:0 0 var(--s6);
+  text-shadow:var(--shadow-off) var(--shadow-off) 0 var(--orange);
+}
+.sec__title--on-orange{ color:var(--ink); text-shadow:var(--shadow-off) var(--shadow-off) 0 var(--yellow) }
+.sec__title--on-ink{ color:var(--yellow); text-shadow:var(--shadow-off) var(--shadow-off) 0 var(--orange) }
+.sec__title--sm{ font-size:clamp(30px,4vw,46px); margin-bottom:var(--s4) }
+
+.sec__head{
+  display:flex; align-items:flex-end; justify-content:space-between;
+  gap:var(--s4); max-width:1400px; margin:0 auto var(--s5); flex-wrap:wrap;
+}
+.sec__head .sec__title{ margin-bottom:0 }
+.sec__lead{
+  max-width:40ch; margin:0 0 var(--s1);
+  font-weight:600; font-size:16px; line-height:1.4;
+}
+
+.note{
+  max-width:1400px; margin:var(--s6) auto 0;
+  font-weight:700; text-transform:uppercase; letter-spacing:.06em;
+  font-size:14px; border-top:3px solid var(--ink); padding-top:var(--s3);
+}
+
+.noscript{
+  border:3px solid var(--ink); padding:var(--s4);
+  font-weight:700; max-width:60ch;
+}
+
+@media (max-width:780px){
+  .sec{ padding:var(--s7) var(--s4) }
+}
+
+/* ============================================================
+   MENU PIZZY
+   Dwie kolumny jako grid (1–15 / 16–30), a nie CSS-owe `columns`.
+   Powód: każda kolumna musi nieść własny nagłówek rozmiarów —
+   przy `columns` jeden nagłówek stał nad prawą połową i połowa
+   cen była nieopisana.
+   ============================================================ */
+.menu{
+  max-width:1400px; margin:0 auto;
+  display:grid; grid-template-columns:repeat(2,1fr);
+  gap:0 var(--s7);
+}
+.menucol{ min-width:0 }
+
+/* Nagłówek jedzie razem ze scrollem, więc przy 15. pozycji nadal
+   widać, która kolumna to 32, a która 60 cm. */
+.menucol__head{
+  position:sticky; top:calc(var(--stick) - 1px); z-index:5;
+  display:flex; justify-content:flex-end;
+  background:var(--yellow);
+  padding:var(--s2) 0;
+  border-bottom:3px solid var(--ink);
+  margin-bottom:var(--s1);
+}
+.menucol__sizes{ display:flex; gap:var(--s2) }
+.menucol__sizes span{
+  width:84px; text-align:center;
+  font-family:var(--display); font-size:18px;
+  text-transform:uppercase;
+  background:var(--ink); color:var(--yellow);
+  padding:7px 0;
+}
+
+.item{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center; gap:var(--s3);
+  padding:var(--s3) 0;
+  border-bottom:2px solid rgba(17,17,17,.18);
+  transition:background .18s ease, transform .18s ease;
+}
+.item:hover{ background:rgba(17,17,17,.06); transform:translateX(5px) }
+
+.item__no{
+  font-family:var(--display); font-size:22px;
+  width:38px; text-align:right; opacity:.55;
+}
+.item__body{ min-width:0 }
+.item__name{
+  font-family:var(--display);
+  font-size:clamp(19px,2.1vw,26px);
+  text-transform:uppercase; line-height:1.05;
+  display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+  margin:0;
+}
+.item__desc{ font-size:14.5px; line-height:1.35; opacity:.82; margin:3px 0 0 }
+
+.chili{ font-size:.72em; letter-spacing:1px }
+
+/* ============================================================
+   PIECZĄTKA Z CENĄ
+   Odwzorowuje czarne, poszarpane plamy z ulotki: nierówny obrys
+   (clip-path) i lekki obrót, inny dla każdej pozycji (--t).
+   ============================================================ */
+.stamp{
+  display:inline-grid; place-items:center;
+  width:84px; min-height:44px; flex:0 0 auto;
+  background:var(--ink); color:var(--yellow);
+  font-family:var(--display); font-size:25px; line-height:1;
+  padding:9px 4px 10px;
+  transform:rotate(var(--t,0deg));
+  clip-path:polygon(
+    3% 8%, 22% 2%, 47% 7%, 71% 1%, 92% 6%, 99% 24%,
+    96% 49%, 100% 73%, 93% 93%, 72% 99%, 48% 94%,
+    25% 100%, 6% 95%, 1% 74%, 4% 50%, 0% 26%
+  );
+  transition:transform .18s ease, background .18s ease, color .18s ease;
+}
+.stamp--sm{ width:62px; min-height:36px; font-size:19px; padding:7px 3px 8px }
+
+/* Kolumna „etykieta + pieczątka”. W DODATKACH etykieta jest widoczna
+   zawsze, w liście pizzy tylko na mobile — na desktopie rolę opisu
+   pełni nagłówek nad kolumną. */
+.pricecol{ display:grid; justify-items:center; gap:5px }
+.pricecol__size{
+  font-weight:700; font-size:11px; letter-spacing:.12em;
+  text-transform:uppercase;
+}
+.item .pricecol__size{ display:none }
+
+.item__prices{ display:flex; gap:var(--s2); align-items:end }
+.item:hover .stamp{ transform:rotate(var(--t,0deg)) scale(1.09) }
+.item:hover .pricecol:last-child .stamp{ background:var(--orange); color:var(--ink) }
+
+@media (max-width:1100px){
+  .menu{ grid-template-columns:1fr; gap:0 }
+  /* przy jednej kolumnie drugi nagłówek byłby powtórzeniem w środku
+     listy — na tej szerokości i tak wchodzą etykiety przy cenach */
+  .menucol__head{ display:none }
+  .item .pricecol__size{ display:block }
+}
+@media (max-width:780px){
+  .item{ grid-template-columns:auto 1fr; gap:2px var(--s3); padding:var(--s3) 0 }
+  .item__no{ font-size:18px; width:28px }
+  .item__prices{ grid-column:1 / -1; margin-top:var(--s1) }
+  .item__prices .stamp{ width:66px; min-height:38px; font-size:20px }
+  .item:hover{ transform:none }
+}
+
+/* ============================================================
+   DODATKI
+   ============================================================ */
+.addons{
+  max-width:1200px; margin:0 auto;
+  display:grid; grid-template-columns:repeat(2,1fr); gap:var(--s5);
+}
+/* Panel kremowy na pomarańczu — składniki jako osobne żetony,
+   a ceny z jawnym podpisem rozmiaru. Wcześniej było "4 / 8 zł"
+   i nie dało się zgadnąć, która cena do którego rozmiaru. */
+.addon{ background:var(--cream); border:4px solid var(--ink); padding:var(--s4) var(--s5) var(--s5) }
+.addon__head{
+  display:flex; justify-content:space-between; align-items:flex-end;
+  gap:var(--s3); margin-bottom:var(--s4); flex-wrap:wrap;
+  border-bottom:3px solid var(--ink); padding-bottom:var(--s3);
+}
+.addon__name{
+  font-family:var(--display); font-size:clamp(21px,2.4vw,28px);
+  text-transform:uppercase; margin:0; line-height:1.05;
+}
+/* Pieczątki w dodatkach są mniejsze niż w liście pizzy. Przy pełnym
+   rozmiarze (84 px) para cen razem z nazwą kategorii nie mieściła się
+   w karcie na 375 px i sekcja rozpychała stronę w poziomie. */
+.addon__prices{ display:flex; gap:var(--s2); flex:0 0 auto }
+.addon__prices .stamp{
+  width:64px; min-height:38px; font-size:19px; padding:7px 3px 8px;
+}
+
+.chips{ list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:7px }
+.chip{
+  border:2px solid var(--ink);
+  padding:4px 11px; font-size:14px; font-weight:600; line-height:1.3;
+  background:transparent;
+  transition:background .16s ease, color .16s ease, transform .16s ease;
+}
+.chip:hover{ background:var(--ink); color:var(--cream); transform:translate(-2px,-2px) }
+
+@media (max-width:780px){
+  .addons{ grid-template-columns:1fr; gap:var(--s4) }
+  .addon{ padding:var(--s4) }
+}
+
+/* ============================================================
+   KARTY (panzerotti / hot-dogi / …)
+   Każda karta ma własne id — to są cele paska kategorii.
+   ============================================================ */
+.cards{
+  max-width:1400px; margin:0 auto;
+  display:grid; grid-template-columns:repeat(2,1fr); gap:var(--s6);
+}
+.card{ border:4px solid var(--ink); background:var(--white); overflow:hidden }
+
+/* ---------- pasek z nazwą sekcji ----------
+   Karty nie mają już grafik; rytm trzyma kolorowy pasek z nazwą. */
+.card__head{
+  border-bottom:4px solid var(--ink);
+  padding:var(--s4) var(--s5);
+}
+.tone--yellow{ background:var(--yellow) }
+.tone--peach { background:var(--peach)  }
+.tone--lemon { background:var(--lemon)  }
+.tone--orange{ background:var(--orange) }
+
+.card__body{ padding:var(--s5) }
+.card__title{
+  font-family:var(--display); font-size:34px; text-transform:uppercase;
+  margin:0;
+}
+.card__row{
+  display:flex; justify-content:space-between; align-items:center; gap:var(--s4);
+  padding:11px 0; border-bottom:2px solid rgba(17,17,17,.15);
+}
+.card__row:last-of-type{ border-bottom:0 }
+.card__rowtxt{ min-width:0 }
+.card__row b{
+  display:block; font-weight:700; font-size:16.5px; line-height:1.25;
+}
+.card__desc{
+  display:block; font-size:13.5px; line-height:1.35; opacity:.72; margin-top:2px;
+}
+.card__note{
+  margin:var(--s3) 0 0; font-size:13.5px; font-weight:700;
+  text-transform:uppercase; letter-spacing:.05em; opacity:.75;
+}
+
+@media (max-width:900px){
+  .cards{ grid-template-columns:1fr; gap:var(--s5) }
+  .card__title{ font-size:28px }
+}
+
+/* ============================================================
+   GALERIA
+   ============================================================ */
+.gallery{ overflow:hidden; background:var(--ink); border-top:4px solid var(--ink) }
+.gallery__track{ display:flex; animation:slide 46s linear infinite; width:max-content }
+.gallery__track img{
+  height:clamp(180px,26vw,320px); width:auto; object-fit:cover;
+  border-right:4px solid var(--ink);
+}
+
+/* ============================================================
+   DOSTAWA
+   ============================================================ */
+.deliv{
+  max-width:1200px; margin:0 auto;
+  display:grid; grid-template-columns:repeat(4,1fr); gap:var(--s5);
+}
+.deliv__item{ border-top:5px solid var(--yellow); padding-top:var(--s4) }
+.deliv__item b{
+  display:block; font-size:clamp(38px,5vw,58px); color:var(--yellow);
+  margin-bottom:var(--s2);
+}
+.deliv__item p{ margin:0; font-size:16px; line-height:1.45 }
+
+@media (max-width:900px){ .deliv{ grid-template-columns:repeat(2,1fr) } }
+@media (max-width:520px){ .deliv{ grid-template-columns:1fr } }
+
+/* ============================================================
+   KONTAKT
+   ============================================================ */
+.contact{
+  max-width:1200px; margin:0 auto;
+  display:grid; grid-template-columns:1fr 1fr; gap:var(--s7);
+}
+.hours{ width:100%; border-collapse:collapse; font-size:17px }
+.hours th,.hours td{ padding:11px 0; border-bottom:2px solid rgba(17,17,17,.18) }
+.hours th{ text-align:left; font-weight:400 }
+.hours td{ text-align:right; font-weight:700; white-space:nowrap }
+.hours tr.is-today th,
+.hours tr.is-today td{ background:var(--ink); color:var(--yellow) }
+.hours tr.is-today th{ padding-left:10px }
+.hours tr.is-today td{ padding-right:10px }
+/* pomarańcz na żółtym to tylko 2.2:1 — "nieczynne" wyróżniamy krojem,
+   nie kolorem */
+.hours .closed{
+  color:var(--ink); text-transform:uppercase;
+  font-size:.82em; letter-spacing:.08em;
+}
+.hours tr.is-today .closed{ color:var(--yellow) }
+
+.addr{ font-style:normal; font-size:19px; line-height:1.5; margin:0 0 var(--s4) }
+.addr strong{ font-family:var(--display); font-size:26px; letter-spacing:.02em }
+
+.link-out{
+  display:inline-block; margin:0 var(--s2) var(--s2) 0;
+  border:3px solid var(--ink); padding:11px var(--s4);
+  font-weight:700; text-decoration:none; font-size:15px;
+  text-transform:uppercase; letter-spacing:.06em;
+  transition:transform .18s ease, background .18s ease, color .18s ease;
+}
+.link-out:hover{ background:var(--ink); color:var(--yellow); transform:translate(-3px,-3px) }
+
+@media (max-width:900px){ .contact{ grid-template-columns:1fr; gap:var(--s6) } }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.foot{
+  background:var(--ink); color:var(--cream);
+  padding:var(--s7) var(--s6); text-align:center;
+}
+.foot__logo{ height:110px; width:auto; margin:0 auto var(--s4) }
+.foot__tag{
+  font-size:clamp(18px,2.6vw,30px); color:var(--yellow);
+  margin:0 0 var(--s5); letter-spacing:.02em;
+}
+.foot__small{
+  max-width:820px; margin:0 auto var(--s3);
+  font-size:13px; line-height:1.5; opacity:.65;
+}
+
+/* ============================================================
+   PASEK AKCJI — telefon na mobile
+   Pełna szerokość zamiast okrągłego FAB-a: mieści etykietę i numer,
+   więc widać, co się stanie po kliknięciu.
+   ============================================================ */
+.callbar{
+  position:fixed; left:0; right:0; bottom:0; z-index:120;
+  display:none; align-items:center; justify-content:center;
+  gap:var(--s2);
+  padding:13px var(--s3);
+  background:var(--orange); color:var(--ink);
+  border-top:4px solid var(--ink);
+  text-decoration:none; text-transform:uppercase;
+  font-weight:700; letter-spacing:.06em; font-size:14px;
+}
+.callbar svg{ width:22px; height:22px; fill:var(--ink); flex:0 0 auto }
+.callbar__num{ font-family:var(--display); font-size:19px; letter-spacing:.02em }
+.callbar:focus-visible{ outline-color:var(--ink); outline-offset:-7px }
+
+@media (max-width:980px){
+  .callbar{ display:flex }
+  /* żeby pasek nie przykrywał stopki */
+  body{ padding-bottom:66px }
+}
+@media (max-width:360px){
+  .callbar__txt{ display:none }
+}
+
+/* ============================================================
+   ANIMACJE WEJŚCIA
+   ============================================================ */
+.reveal{
+  opacity:0; transform:translateY(26px);
+  transition:opacity .6s ease var(--d,0s), transform .6s ease var(--d,0s);
+}
+.reveal.is-in{ opacity:1; transform:none }
+
+@media (prefers-reduced-motion:reduce){
+  .reveal{ opacity:1; transform:none; transition:none }
+  .marquee__track,.gallery__track,.dot.is-open{ animation:none }
+  .hero:hover .hero__shot img{ transform:scale(1.02) }
+  .btn:hover,.link-out:hover,.item:hover,.chip:hover{ transform:none }
+  .item:hover .stamp{ transform:rotate(var(--t,0deg)) }
+}

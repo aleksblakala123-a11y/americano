@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nie ma takiej strony — Pizzeria AMERICANO Świdnik</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#FAC112">
+<link rel="icon" href="assets/favicon.png" sizes="180x180">
+<!-- fonty z własnego serwera, @font-face siedzi w styles.css -->
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/titanone-latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/opensans-latin.woff2" crossorigin>
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* Strona błędu jest jednoekranowa — nie ciągnie za sobą nagłówka
+     ani paska kategorii, więc dostaje własny, minimalny układ. */
+  .err{
+    min-height:100vh; display:grid; place-content:center; justify-items:start;
+    gap:var(--s4); padding:var(--s7) var(--s5); max-width:52ch; margin:0 auto;
+  }
+  .err__code{
+    font-family:var(--display); font-size:clamp(70px,18vw,150px);
+    line-height:1; margin:0;
+    text-shadow:var(--shadow-off) var(--shadow-off) 0 var(--orange);
+  }
+  .err__title{ font-family:var(--display); font-size:clamp(24px,4vw,34px); text-transform:uppercase; margin:0 }
+  .err__lead{ margin:0; font-size:18px; line-height:1.5 }
+  .err__cta{ display:flex; gap:var(--s3); flex-wrap:wrap; margin-top:var(--s2) }
+</style>
+</head>
+<body>
+
+<main class="err">
+  <p class="err__code">404</p>
+  <h1 class="err__title">Tej strony u nas nie ma</h1>
+  <p class="err__lead">
+    Adres jest nieaktualny albo zawiera literówkę. Menu, godziny otwarcia
+    i numer do zamówień znajdziesz na stronie głównej.
+  </p>
+  <div class="err__cta">
+    <a class="btn btn--solid" href="/">Wróć na stronę główną</a>
+    <a class="btn btn--out" href="tel:+48510010707">Zadzwoń — 510 010 707</a>
+  </div>
+</main>
+
+</body>
+</html>

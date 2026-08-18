@@ -1,0 +1,16 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "americano",
+      "runtimeExecutable": "powershell",
+      "runtimeArgs": [
+        "-NoProfile",
+        "-ExecutionPolicy", "Bypass",
+        "-File", "C:\\Users\\aleks\\Desktop\\sklep kawiarnia\\americano-swidnik\\serve.ps1",
+        "-Port", "5173"
+      ],
+      "port": 5173
+    }
+  ]
+}

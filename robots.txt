@@ -1,0 +1,10 @@
+# Pizzeria AMERICANO Świdnik
+# UWAGA: podmień TWOJA-DOMENA.pl na docelowy adres przed publikacją.
+
+User-agent: *
+Allow: /
+
+# katalog z oryginałami zdjęć — nie ma czego indeksować
+Disallow: /assets/_src/
+
+Sitemap: https://TWOJA-DOMENA.pl/sitemap.xml

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- ============================================================
+     UWAGA — DOMENA
+     Poniżej, w robots.txt i w sitemap.xml występuje placeholder
+     https://TWOJA-DOMENA.pl/ . Trzeba go podmienić na docelowy
+     adres PRZED publikacją. Zły canonical szkodzi bardziej niż
+     jego brak, więc to jest blokada wdrożenia, nie kosmetyka.
+     ============================================================ -->
+<link rel="canonical" href="https://TWOJA-DOMENA.pl/">
+
+<title>Pizzeria AMERICANO Świdnik — pizza, panzerotti, zapiekanki | dowóz</title>
+<meta name="description" content="Pizzeria AMERICANO w Świdniku, ul. Kosynierów 14. 30 rodzajów pizzy w dwóch rozmiarach — 32 cm i 60 cm — panzerotti, hot-dogi, zapiekanki. Darmowy dowóz na terenie Świdnika od 50 zł, do 5 km od lokalu. Zamów: 510 010 707.">
+<meta name="theme-color" content="#FAC112">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pizzeria AMERICANO Świdnik">
+<meta property="og:locale" content="pl_PL">
+<meta property="og:url" content="https://TWOJA-DOMENA.pl/">
+<meta property="og:title" content="Pizzeria AMERICANO Świdnik — pizza prosto z pieca">
+<meta property="og:description" content="30 rodzajów pizzy w rozmiarach 32 i 60 cm, panzerotti, zapiekanki, hot-dogi. Dowóz na terenie Świdnika. Zamów: 510 010 707.">
+<meta property="og:image" content="https://TWOJA-DOMENA.pl/assets/pizza-hero.jpg">
+<meta property="og:image:alt" content="Pizza z pieca w pizzerii AMERICANO w Świdniku">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="assets/favicon.png" sizes="180x180">
+<link rel="apple-touch-icon" href="assets/favicon.png">
+
+<!-- LCP: kadr hero ma ruszyć razem z HTML, nie po CSS -->
+<link rel="preload" as="image" href="assets/hero-pizza.jpg" fetchpriority="high">
+
+<!-- Fonty stoją na własnym serwerze (assets/fonts/, deklaracje
+     @font-face na początku styles.css). Zero połączeń do
+     fonts.gstatic.com: bez przekazywania IP odwiedzającego stronie
+     trzeciej i bez dodatkowego DNS + TLS do obcego origin.
+
+     `crossorigin` przy preloadzie fontu jest OBOWIĄZKOWE, także dla
+     plików z tego samego serwera — fonty pobierane są w trybie CORS.
+     Bez tego atrybutu przeglądarka odrzuca wstępnie pobrany plik
+     i ściąga go drugi raz. -->
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/titanone-latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/titanone-latinext.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/opensans-latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/opensans-latinext.woff2" crossorigin>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a class="skip" href="#tresc">Przejdź do treści</a>
+
+<!-- ============ TOPBAR ============ -->
+<div class="topbar">
+  <div class="topbar__in">
+    <span class="topbar__item topbar__status">
+      <span class="dot" id="statusDot"></span><span id="statusText">Sprawdzam godziny…</span>
+    </span>
+    <span class="topbar__item topbar__addr">ul. Kosynierów 14, Świdnik</span>
+    <a class="topbar__item topbar__tel" href="tel:+48510010707">
+      <span class="topbar__telLabel">Zamów:</span> 510&nbsp;010&nbsp;707
+    </a>
+  </div>
+</div>
+
+<!-- ============ NAV + KATEGORIE ============
+     Oba paski przyklejają się jako jeden blok, dzięki czemu pasek
+     kategorii nie musi znać wysokości nagłówka. -->
+<div class="stick" id="stick">
+  <header class="nav" id="nav">
+    <a class="nav__brand" href="#top" aria-label="AMERICANO — strona główna">
+      <img src="assets/logo.png" alt="AMERICANO" class="nav__logo" width="360" height="360">
+    </a>
+    <nav class="nav__links" id="navLinks" aria-label="Główne">
+      <a href="#pizza">Pizza</a>
+      <a href="#reszta">Panzerotti &amp; więcej</a>
+      <a href="#dostawa">Dostawa</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+    <a class="btn btn--call" href="tel:+48510010707">Zadzwoń i zamów</a>
+    <button class="nav__burger" id="burger" aria-label="Menu nawigacji" aria-expanded="false" aria-controls="navLinks">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <!-- Pasek kategorii menu. Ukryty na starcie, żeby nie zabierać
+       pierwszego ekranu; pokazuje się po zejściu poniżej hero. -->
+  <nav class="catnav" id="catnav" aria-label="Kategorie menu">
+    <ul class="catnav__list">
+      <li><a href="#pizza">Pizza</a></li>
+      <li><a href="#dodatki">Dodatki</a></li>
+      <li><a href="#panzerotti">Panzerotti</a></li>
+      <li><a href="#hot-dogi">Hot-dogi</a></li>
+      <li><a href="#zapiekanki">Zapiekanki</a></li>
+      <li><a href="#przekaski">Przekąski</a></li>
+    </ul>
+  </nav>
+</div>
+
+<main id="tresc">
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top" aria-labelledby="heroTitle">
+  <div class="hero__grid">
+    <div class="hero__copy">
+      <p class="eyebrow reveal">Pizzeria w Świdniku • od 2021</p>
+      <h1 class="display hero__h1" id="heroTitle">
+        <span class="line reveal" style="--d:.05s">PIZZA</span>
+        <span class="line reveal" style="--d:.12s">PROSTO</span>
+        <span class="line reveal" style="--d:.19s">Z PIECA</span>
+      </h1>
+      <p class="hero__lead reveal" style="--d:.26s">
+        30 rodzajów pizzy w dwóch rozmiarach — 32 cm i wielkie 60 cm.
+        Do tego panzerotti, zapiekanki i hot-dogi. Odbiór w lokalu albo dowóz pod drzwi.
+      </p>
+      <div class="hero__cta reveal" style="--d:.33s">
+        <a class="btn btn--solid" href="tel:+48510010707">Zadzwoń<span class="btn__num"> — 510 010 707</span></a>
+        <a class="btn btn--out" href="#pizza">Zobacz menu</a>
+      </div>
+      <ul class="hero__facts reveal" style="--d:.4s">
+        <li><b>32 / 60</b><span>cm do wyboru</span></li>
+        <li><b>30</b><span>rodzajów pizzy</span></li>
+        <li><b>0 zł</b><span>dowóz od 50 zł</span></li>
+      </ul>
+    </div>
+
+    <!-- Zdjęcie ma czarne tło, więc panel jest w tym samym czarnym —
+         fotografia nie ma widocznej krawędzi, a styk z żółcią jest
+         twardym cięciem koloru, zgodnie z systemem. -->
+    <figure class="hero__shot">
+      <img src="assets/hero-pizza.jpg" alt="Kawałek pizzy pepperoni z ciągnącym się serem"
+           width="736" height="736" fetchpriority="high">
+    </figure>
+  </div>
+</section>
+
+<!-- ============ MARQUEE ============ -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track">
+    <span>30 RODZAJÓW PIZZY ✦ DARMOWA DOSTAWA OD 50 ZŁ ✦ PIZZA 60 CM ✦ PANZEROTTI ✦ ZAPIEKANKI ✦ HOT-DOGI ✦ <span data-years>5</span> LAT W ŚWIDNIKU ✦</span>
+    <span>30 RODZAJÓW PIZZY ✦ DARMOWA DOSTAWA OD 50 ZŁ ✦ PIZZA 60 CM ✦ PANZEROTTI ✦ ZAPIEKANKI ✦ HOT-DOGI ✦ <span data-years>5</span> LAT W ŚWIDNIKU ✦</span>
+  </div>
+</div>
+
+<!-- ============ STATS ============ -->
+<section class="stats" aria-label="AMERICANO w liczbach">
+  <div class="stats__grid">
+    <div class="stat reveal"><b class="count" data-to="30">0</b><span>rodzajów<br>pizzy</span></div>
+    <div class="stat reveal" style="--d:.08s"><b class="count" data-to="60" data-suffix=" cm">0</b><span>największa<br>pizza</span></div>
+    <div class="stat reveal" style="--d:.16s"><b class="count" data-to="5" data-years>0</b><span>lat<br>w Świdniku</span></div>
+    <div class="stat reveal" style="--d:.24s"><b>4,7<i aria-hidden="true">★</i></b><span>264 opinii<br>w Google</span></div>
+  </div>
+</section>
+
+<!-- ============ PIZZA MENU ============ -->
+<section class="sec sec--yellow" id="pizza" aria-labelledby="pizzaTitle">
+  <div class="sec__head">
+    <h2 class="display sec__title" id="pizzaTitle">PIZZA</h2>
+    <p class="sec__lead reveal">Każdą pozycję robimy w dwóch rozmiarach. Cena po lewej to 32 cm, po prawej 60 cm.</p>
+  </div>
+
+  <div class="menu" id="menu">
+    <noscript>
+      <p class="noscript">
+        Pełne menu wczytuje się skryptem. Jeśli się nie pokazało —
+        zadzwoń, chętnie podamy je przez telefon:
+        <a href="tel:+48510010707">510 010 707</a>.
+      </p>
+    </noscript>
+  </div>
+
+  <p class="note reveal">W cenie każdej pizzy wliczone jest opakowanie.</p>
+</section>
+
+<!-- ============ DODATKI ============ -->
+<section class="sec sec--orange" id="dodatki" aria-labelledby="dodatkiTitle">
+  <h2 class="display sec__title sec__title--on-orange reveal" id="dodatkiTitle">DODATKI</h2>
+  <div class="addons" id="addons"></div>
+</section>
+
+<!-- ============ RESZTA MENU ============ -->
+<section class="sec sec--cream" id="reszta" aria-labelledby="resztaTitle">
+  <h2 class="display sec__title reveal" id="resztaTitle">NIE TYLKO PIZZA</h2>
+  <div class="cards" id="cards"></div>
+</section>
+
+<!-- ============ GALERIA ============ -->
+<section class="gallery" aria-label="Zdjęcia z pizzerii">
+  <div class="gallery__track" id="galleryTrack"></div>
+</section>
+
+<!-- ============ DOSTAWA ============ -->
+<section class="sec sec--ink" id="dostawa" aria-labelledby="dostawaTitle">
+  <h2 class="display sec__title sec__title--on-ink reveal" id="dostawaTitle">DOWÓZ</h2>
+  <div class="deliv">
+    <!-- POPRAWKA 18.08.2026: było „4 zł", ulotka (assets/_src/ulotka2.jpg)
+         mówi wyraźnie „PONIŻEJ 50 ZŁ DOPŁATA 6 ZŁ".
+         TODO: CLIENT CONFIRMATION — potwierdzić u właścicielki. -->
+    <div class="deliv__item reveal">
+      <b class="display">50 zł</b>
+      <p>Minimalne zamówienie na dowóz. Poniżej tej kwoty doliczamy 6 zł.</p>
+    </div>
+    <div class="deliv__item reveal" style="--d:.08s">
+      <b class="display">0 zł</b>
+      <p>Dostawa na terenie Świdnika przy zamówieniu powyżej 50 zł. Dowozimy do 5 km od lokalu.</p>
+    </div>
+    <div class="deliv__item reveal" style="--d:.16s">
+      <b class="display">120 zł</b>
+      <p>Przy zamówieniu na dowóz powyżej 120 zł — napój gratis.</p>
+    </div>
+    <div class="deliv__item reveal" style="--d:.24s">
+      <b class="display">1 zł</b>
+      <p>Sztućce płatne dodatkowo.</p>
+    </div>
+  </div>
+  <a class="btn btn--solid btn--big reveal" href="tel:+48510010707">Zamów telefonicznie — 510 010 707</a>
+</section>
+
+<!-- ============ KONTAKT ============ -->
+<section class="sec sec--yellow" id="kontakt" aria-labelledby="kontaktTitle">
+  <h2 class="sr-only" id="kontaktTitle">Kontakt i godziny otwarcia</h2>
+  <div class="contact">
+    <div class="contact__col reveal">
+      <h3 class="display sec__title sec__title--sm">GODZINY</h3>
+      <table class="hours">
+        <caption class="sr-only">Godziny otwarcia pizzerii AMERICANO w kolejnych dniach tygodnia</caption>
+        <tbody id="hours"></tbody>
+      </table>
+    </div>
+    <div class="contact__col reveal" style="--d:.1s">
+      <h3 class="display sec__title sec__title--sm">ZNAJDŹ NAS</h3>
+      <address class="addr">
+        <strong>AMERICANO</strong><br>
+        ul. Kosynierów 14<br>
+        21-040 Świdnik
+      </address>
+      <a class="link-out" href="tel:+48510010707">510 010 707</a>
+      <a class="link-out" href="mailto:americano.pub@wp.pl">americano.pub@wp.pl</a>
+      <a class="link-out" href="https://www.facebook.com/AmericanoPub" target="_blank" rel="noopener">Facebook</a>
+      <a class="link-out" href="https://maps.google.com/?q=Kosynier%C3%B3w+14,+21-040+%C5%9Awidnik" target="_blank" rel="noopener">Dojazd — Mapy Google</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="foot">
+  <img src="assets/logo.png" alt="" class="foot__logo" width="360" height="360" loading="lazy">
+  <p class="foot__tag display">PIZZA · PANZEROTTI · ZAPIEKANKI · HOT-DOGI</p>
+  <p class="foot__small">
+    Alergeny: mleko krowie, jaja, ryby, skorupiaki, zboża zawierające gluten, orzeszki ziemne,
+    soja, seler, sezam, gorczyca, łubin, mięczaki oraz dwutlenek siarki i siarczany
+    w stężeniu przynajmniej 10&nbsp;mg/kg.
+  </p>
+  <p class="foot__small">© <span id="year"></span> AMERICANO Świdnik · ul. Kosynierów 14 · 510 010 707</p>
+</footer>
+
+<!-- ============ PASEK AKCJI (mobile) ============ -->
+<a class="callbar" href="tel:+48510010707">
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.6 10.8a15.1 15.1 0 006.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.2.4 2.4.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 013 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.4 0 .8-.2 1l-2.3 2.2z"/></svg>
+  <span class="callbar__txt">Zadzwoń i zamów</span>
+  <span class="callbar__num">510 010 707</span>
+</a>
+
+<script src="script.js"></script>
+</body>
+</html>
