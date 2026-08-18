@@ -33,6 +33,24 @@ if (-not (Test-Path $src)) { New-Item -ItemType Directory -Path $src | Out-Null 
 $jpegCodec = [System.Drawing.Imaging.ImageCodecInfo]::GetImageEncoders() |
              Where-Object { $_.MimeType -eq 'image/jpeg' }
 
+# Kadrowanie zdjęć z galerii — liczby to piksele ORYGINAŁU z _src/,
+# odcinane od danej krawędzi. Powód jest treściowy, nie estetyczny:
+# część zdjęć z Facebooka ma wklejone naklejki z godzinami otwarcia
+# na konkretne dni. Takie godziny są nieaktualne i sprzeczne z tabelą
+# w sekcji „Kontakt", więc na stronie komercyjnej nie mogą zostać.
+#
+# pizza-6: biała plansza „01.05.26r. 13:00-23:00 / 02.05 / 03.05"
+#          (majówka) siedzi na wieku kartonu nad pizzą. Sam placek
+#          zaczyna się dopiero ~420 px od góry, więc 380 px zdejmuje
+#          całą planszę i nie tnie jedzenia.
+#
+# Naklejki NA jedzeniu są nie do wykadrowania — takie zdjęcia
+# wypadają z galerii (panzerotti-1, panzerotti-3: nalepka-okulary
+# wprost na panzerotti; przekaski: plansza „01-03.05.24r").
+$crops = @{
+  'pizza-6.jpg' = @{ Top = 380 }
+}
+
 function Get-Source {
   param([string]$Name)
   # Jeśli oryginał jest już zarchiwizowany, to on jest źródłem prawdy.
@@ -51,11 +69,25 @@ function Resize-Image {
   if (-not $source) { Write-Host "POMINIĘTO (brak): $Name"; return $null }
 
   $target = Join-Path $assets $Name
-  $before = (Get-Item $target).Length
+  # nowy plik galerii jeszcze nie leży w assets/ — wtedy nie ma z czym porównać
+  $before = if (Test-Path $target) { (Get-Item $target).Length } else { 0 }
+
+  $crop = $crops[$Name]
 
   $img = [System.Drawing.Image]::FromFile($source)
   try {
-    $w = $img.Width; $h = $img.Height
+    # obszar źródłowy: całe zdjęcie minus kadr z $crops
+    $cx = 0; $cy = 0; $cw = $img.Width; $ch = $img.Height
+    if ($crop) {
+      if ($crop.Left) { $cx = [int]$crop.Left }
+      if ($crop.Top)  { $cy = [int]$crop.Top }
+      $cw = $img.Width  - $cx - $(if ($crop.Right)  { [int]$crop.Right }  else { 0 })
+      $ch = $img.Height - $cy - $(if ($crop.Bottom) { [int]$crop.Bottom } else { 0 })
+    }
+    $srcRect = New-Object System.Drawing.Rectangle($cx, $cy, $cw, $ch)
+
+    # skalujemy to, co zostało po kadrze, a nie oryginał
+    $w = $cw; $h = $ch
     $scale = 1.0
     if ($MaxHeight -gt 0 -and $h -gt $MaxHeight) { $scale = $MaxHeight / $h }
     if ($MaxWidth  -gt 0 -and ($w * $scale) -gt $MaxWidth) { $scale = $MaxWidth / $w }
@@ -70,7 +102,8 @@ function Resize-Image {
     $g.InterpolationMode  = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
     $g.SmoothingMode      = [System.Drawing.Drawing2D.SmoothingMode]::HighQuality
     $g.PixelOffsetMode    = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
-    $g.DrawImage($img, (New-Object System.Drawing.Rectangle(0, 0, $nw, $nh)))
+    $g.DrawImage($img, (New-Object System.Drawing.Rectangle(0, 0, $nw, $nh)),
+                 $srcRect, [System.Drawing.GraphicsUnit]::Pixel)
     $g.Dispose()
 
     $tmp = "$target.tmp"
@@ -92,9 +125,13 @@ function Resize-Image {
   # Rekompresja małego pliku potrafi go powiększyć (pizza-3.jpg rosła
   # ze 132 na 155 KB). Jeśli wynik nie jest lżejszy od oryginału,
   # zostawiamy oryginał — mniejsze wymiary nie są warte większego pliku.
+  #
+  # UWAGA: przy kadrowaniu ta furtka MUSI być zamknięta. Kopiowanie
+  # oryginału z powrotem przywróciłoby zdjęcie z naklejką, czyli dokładnie
+  # to, co kadr miał usunąć. Kilka kilobajtów jest tu bez znaczenia.
   $srcLen = (Get-Item $source).Length
   $note   = ''
-  if ((Get-Item $tmp).Length -ge $srcLen) {
+  if (-not $crop -and (Get-Item $tmp).Length -ge $srcLen) {
     Remove-Item $tmp -Force
     Copy-Item $source $target -Force
     $note = '  (zachowano oryginał)'
@@ -111,9 +148,12 @@ function Resize-Image {
   return [pscustomobject]@{ Name = $Name; Width = $nw; Height = $nh }
 }
 
+# panzerotti-3.jpg wypadło z galerii (nalepka-okulary wprost na jedzeniu,
+# nie do wykadrowania) — w jego miejsce wchodzi pizza-box-2.jpg, czyste
+# zdjęcie leżące wcześniej nieużywane w _src/nieuzywane/.
 $gallery = @(
   'pizza-1.jpg','pizza-2.jpg','panzerotti-2.jpg','pizza-3.jpg','zapiekanki.jpg',
-  'pizza-4.jpg','stripsy.jpg','pizza-5.jpg','panzerotti-3.jpg','pizza-6.jpg',
+  'pizza-4.jpg','stripsy.jpg','pizza-5.jpg','pizza-box-2.jpg','pizza-6.jpg',
   'pizza-box.jpg','hotdog.jpg'
 )
 

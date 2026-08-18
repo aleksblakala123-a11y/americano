@@ -154,7 +154,13 @@ const HOURS = [
 
 /* [plik, szerokość, wysokość] — wymiary po przeskalowaniu przez
    tools/optimize-images.ps1. Podajemy je w HTML, żeby przeglądarka
-   zarezerwowała miejsce i galeria nie przesuwała layoutu. */
+   zarezerwowała miejsce i galeria nie przesuwała layoutu.
+
+   Do galerii wchodzą tylko czyste zdjęcia potraw. Zdjęcia z FB
+   z wklejonymi naklejkami (nieaktualne godziny otwarcia na majówkę,
+   nalepki na jedzeniu) są odrzucone albo wykadrowane — mapa kadrów
+   siedzi w $crops w tools/optimize-images.ps1. Nie dodawaj tu pliku
+   bez wcześniejszego obejrzenia go w pełnej rozdzielczości. */
 const GALLERY = [
   ['pizza-1',      747, 560],
   ['pizza-2',      420, 560],
@@ -164,8 +170,8 @@ const GALLERY = [
   ['pizza-4',      420, 560],
   ['stripsy',      914, 560],
   ['pizza-5',      747, 560],
-  ['panzerotti-3', 749, 560],
-  ['pizza-6',      420, 560],
+  ['pizza-box-2',  420, 560],
+  ['pizza-6',      554, 560],
   ['pizza-box',    747, 560],
   ['hotdog',       747, 560],
 ];

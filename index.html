@@ -195,23 +195,43 @@
 <!-- ============ DOSTAWA ============ -->
 <section class="sec sec--ink" id="dostawa" aria-labelledby="dostawaTitle">
   <h2 class="display sec__title sec__title--on-ink reveal" id="dostawaTitle">DOWÓZ</h2>
+  <!-- Próg 50 zł to jedyna liczba, której klient tu naprawdę szuka, więc
+       dostaje własny panel zamiast być jednym z czterech równych kafelków.
+       Wcześniej dwa osobne kafelki („50 zł — minimalne zamówienie, poniżej
+       doliczamy 6 zł" i „0 zł — dostawa powyżej 50 zł") mówiły o tym samym
+       progu i czytane po kolei przeczyły sobie: skoro 50 zł to minimum,
+       to skąd przypadek „poniżej 50 zł"? Teraz są to dwa jawne warianty
+       jednej decyzji.
+
+       Ulotka (assets/_src/ulotka2.jpg) ma tę sprzeczność u siebie —
+       napis „MINIMALNE ZAMÓWIENIE NA DOWÓZ 50 PLN" stoi obok
+       „PONIŻEJ 50 ZŁ DOPŁATA 6 ZŁ". Trzymamy się obu liczb, ale bez słowa
+       „minimalne", bo dopłata dowodzi, że zamówienie poniżej 50 zł jest
+       przyjmowane.
+       TODO: CLIENT CONFIRMATION — czy 50 zł to twardy minimalny próg
+       (wtedy dopłata 6 zł jest reliktem), czy próg darmowej dostawy
+       (wtedy obecna wersja jest poprawna). Potwierdzić u właścicielki.
+
+       POPRAWKA 18.08.2026: dopłata była podana jako „4 zł", ulotka mówi 6 zł. -->
+  <div class="deliv-key reveal">
+    <div class="deliv-key__case">
+      <span class="deliv-key__amount">Zamówienie od 50 zł</span>
+      <strong class="deliv-key__verdict display">DOWÓZ GRATIS</strong>
+      <p>Na terenie Świdnika, do 5&nbsp;km od lokalu.</p>
+    </div>
+    <div class="deliv-key__case deliv-key__case--alt">
+      <span class="deliv-key__amount">Zamówienie poniżej 50 zł</span>
+      <strong class="deliv-key__verdict display">DOWÓZ 6 ZŁ</strong>
+      <p>Do kwoty zamówienia doliczamy 6&nbsp;zł.</p>
+    </div>
+  </div>
+
   <div class="deliv">
-    <!-- POPRAWKA 18.08.2026: było „4 zł", ulotka (assets/_src/ulotka2.jpg)
-         mówi wyraźnie „PONIŻEJ 50 ZŁ DOPŁATA 6 ZŁ".
-         TODO: CLIENT CONFIRMATION — potwierdzić u właścicielki. -->
     <div class="deliv__item reveal">
-      <b class="display">50 zł</b>
-      <p>Minimalne zamówienie na dowóz. Poniżej tej kwoty doliczamy 6 zł.</p>
-    </div>
-    <div class="deliv__item reveal" style="--d:.08s">
-      <b class="display">0 zł</b>
-      <p>Dostawa na terenie Świdnika przy zamówieniu powyżej 50 zł. Dowozimy do 5 km od lokalu.</p>
-    </div>
-    <div class="deliv__item reveal" style="--d:.16s">
       <b class="display">120 zł</b>
       <p>Przy zamówieniu na dowóz powyżej 120 zł — napój gratis.</p>
     </div>
-    <div class="deliv__item reveal" style="--d:.24s">
+    <div class="deliv__item reveal" style="--d:.08s">
       <b class="display">1 zł</b>
       <p>Sztućce płatne dodatkowo.</p>
     </div>
@@ -256,7 +276,8 @@
     soja, seler, sezam, gorczyca, łubin, mięczaki oraz dwutlenek siarki i siarczany
     w stężeniu przynajmniej 10&nbsp;mg/kg.
   </p>
-  <p class="foot__small">© <span id="year"></span> AMERICANO Świdnik · ul. Kosynierów 14 · 510 010 707</p>
+  <p class="foot__small">© <span id="year"></span> AMERICANO Świdnik · ul. Kosynierów 14 ·
+    <a class="foot__tel" href="tel:+48510010707">510&nbsp;010&nbsp;707</a></p>
 </footer>
 
 <!-- ============ PASEK AKCJI (mobile) ============ -->
